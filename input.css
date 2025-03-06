@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --font-*: initial;
+  --font-inter: Inter, serif;
+
+  --breakpoint-*: initial;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 976px;
+  --breakpoint-xl: 1440px;
+
+  --color-navy: #0d2644;
+  --color-blue: #1a2bc3;
+  --color-orange: #ff5745;
+  --color-black: #333;
+  --color-white: #fefdf8;
+
+  --animate-slide-left: slide-left 16s linear infinite;
+
+  @keyframes slide-left {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+}
+
+@utility container {
+  .animate-slide-left {
+    animation: slide-left 16s linear infinite;
+  }
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+/* Custom css for mobile menu */
+#menu-toggle:checked + #menu {
+  display: block;
+}
+
+.bg-hero {
+  background-image: url("/img/fabric/factory-1.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  isolation: isolate; /* Creates a new stacking context */
+}
+
+.bg-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0; /* Shorthand for top/right/bottom/left: 0 */
+  background-color: rgba(0, 0, 0, 0.55);
+  z-index: -1; /* Places overlay behind the content but above the background */
+}
+
+/* data aos not overflowing */
+[data-aos] {
+  pointer-events: none;
+}
+.aos-animate {
+  pointer-events: auto;
+}
+.aos-init[data-aos][data-aos].aos-animate {
+  transform: unset;
+}
