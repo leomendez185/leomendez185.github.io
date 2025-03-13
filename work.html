@@ -399,18 +399,60 @@
       function filterProducts(category) {
         const productCategories =
           document.querySelectorAll(".product-category");
-        productCategories.forEach((categoryBlock) => {
-          if (
-            category === "all" ||
-            categoryBlock.getAttribute("data-category") === category
-          ) {
-            categoryBlock.style.display = "block"; // Show the category
-          } else {
-            categoryBlock.style.display = "none"; // Hide the category
+
+        if (category === "all") {
+          // Create a combined gallery for "All Products"
+          const allGallery = document.createElement("div");
+          allGallery.id = "all-gallery";
+          allGallery.className =
+            "grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3";
+
+          // Clear existing content
+          productCategories.forEach((cat) => {
+            cat.style.display = "none";
+          });
+
+          // If an all-gallery already exists, remove it
+          const existingAllGallery = document.getElementById(
+            "all-gallery-container",
+          );
+          if (existingAllGallery) {
+            existingAllGallery.remove();
           }
-        });
+
+          // Create a container for the all gallery
+          const allContainer = document.createElement("div");
+          allContainer.id = "all-gallery-container";
+          productGrid.appendChild(allContainer);
+          allContainer.appendChild(allGallery);
+
+          // Clone all images into the all gallery
+          const allImages = document.querySelectorAll(".product-category img");
+          allImages.forEach((img) => {
+            const clone = img.cloneNode(true);
+            allGallery.appendChild(clone);
+          });
+        } else {
+          // Remove the all gallery if it exists
+          const existingAllGallery = document.getElementById(
+            "all-gallery-container",
+          );
+          if (existingAllGallery) {
+            existingAllGallery.remove();
+          }
+
+          // Show only the selected category
+          productCategories.forEach((categoryBlock) => {
+            if (categoryBlock.getAttribute("data-category") === category) {
+              categoryBlock.style.display = "block"; // Show the category
+            } else {
+              categoryBlock.style.display = "none"; // Hide the category
+            }
+          });
+        }
       }
 
+      // Set up event listeners for tabs
       tabs.forEach((tab) => {
         tab.addEventListener("click", function () {
           tabs.forEach((tab) =>
@@ -422,7 +464,24 @@
         });
       });
 
-      filterProducts("all"); // Initial load
+      // Initialize the page with "All Products" active and showing all products
+      document.addEventListener("DOMContentLoaded", function () {
+        // Set "All Products" tab as active
+        const allProductsTab = document.querySelector(
+          '.tab-btn[data-category="all"]',
+        );
+        if (allProductsTab) {
+          // First remove any active classes that might be set in HTML
+          tabs.forEach((tab) =>
+            tab.classList.remove("active", "bg-navy", "text-white"),
+          );
+          // Add active classes to All Products tab
+          allProductsTab.classList.add("active", "bg-navy", "text-white");
+        }
+
+        // Show all products in combined grid
+        filterProducts("all");
+      });
 
       // Dynamic images for apparel
       const galleryApparel = document.getElementById("apparel-gallery");
